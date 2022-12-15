@@ -1,0 +1,7 @@
+backup/
+tmp/
+
+secrets.sh
+
+downloads/
+processed/
