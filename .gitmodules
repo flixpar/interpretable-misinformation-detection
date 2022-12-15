@@ -1,0 +1,3 @@
+[submodule "userstudy"]
+	path = userstudy
+	url = https://github.com/flixpar/interpretable-misinformation-detection-userstudy.git
