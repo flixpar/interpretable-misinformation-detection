@@ -28,6 +28,7 @@ def clean_text(text):
 		lower=False,
 		no_line_breaks=True,
 		no_urls=True, replace_with_url="",
+		no_emoji=True,
 		no_punct=False, # replace_with_punct="",
 		lang="en",
 	)
