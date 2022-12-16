@@ -60,4 +60,4 @@ tweets = [format_tweet(tweet_id) for tweet_id in tweet_ids]
 tweets_df = pd.DataFrame(tweets)
 
 os.makedirs("processed/", exist_ok=True)
-tweets_df.to_csv("processed/cn_tweets.csv", index=False)
+tweets_df.to_csv("processed/community_notes_tweets.csv", index=False)
