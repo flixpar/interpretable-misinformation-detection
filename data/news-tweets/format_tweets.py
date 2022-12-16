@@ -40,6 +40,7 @@ def format_tweet(tweet_id):
 	output = {
 		"tweetId": tweet_id,
 		"content": content,
+		"site": tweet["site"],
 
 		"conversation_id": tweet["conversation_id"],
 

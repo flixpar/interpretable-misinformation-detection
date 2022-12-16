@@ -31,6 +31,7 @@ sites = {
 }
 
 def fetch_tweets(site, count):
+	file_ids = []
 	next_token = None
 	while count > 0:
 		payload = payload_base.copy()
@@ -43,10 +44,12 @@ def fetch_tweets(site, count):
 		next_token = response.json().get("meta", {}).get("next_token")
 
 		ms = round(time.time() * 1000)
+		file_ids.append(ms)
 		with open(f"downloads/tweets/{ms}.json", "w") as f:
 			f.write(response.text)
+	return file_ids
 
-def merge_outputs():
+def merge_outputs(metadata):
 	fns = glob.glob("downloads/tweets/*.json")
 
 	data = {"data": [], "includes": {"users": []}}
@@ -56,14 +59,19 @@ def merge_outputs():
 		with open(fn, "r") as f:
 			f_data = json.load(f)
 
-			if "data" in f_data:
-				data["data"].extend(f_data["data"])
-				data["includes"]["users"].extend(f_data["includes"]["users"])
-			else:
-				print("No data in:", fn)
+		ms = fn.split("/")[-1].split(".")[0]
+		site = metadata[ms]
 
-			if "errors" in f_data:
-				errors.extend([e["resource_id"] for e in f_data["errors"]])
+		if "data" in f_data:
+			for i in range(len(f_data["data"])):
+				f_data["data"][i]["site"] = site
+			data["data"].extend(f_data["data"])
+			data["includes"]["users"].extend(f_data["includes"]["users"])
+		else:
+			print("No data in:", fn)
+
+		if "errors" in f_data:
+			errors.extend([e["resource_id"] for e in f_data["errors"]])
 
 	with open("downloads/tweets.json", "w") as f:
 		json.dump(data, f, indent="\t")
@@ -74,10 +82,13 @@ def merge_outputs():
 def main():
 	os.makedirs("downloads/tweets/", exist_ok=True)
 
+	meta = {}
 	for site, count in tqdm.tqdm(sites):
-		fetch_tweets(site, count)
+		ids = fetch_tweets(site, count)
+		for id in ids:
+			meta[id] = site
 
-	merge_outputs()
+	merge_outputs(meta)
 
 if __name__ == "__main__":
 	main()
