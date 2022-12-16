@@ -1,5 +1,6 @@
 using CSV
 using DataFrames
+using JSON
 
 
 println("Reading community notes data")
@@ -38,3 +39,18 @@ sort!(tweets, :tweetId)
 
 mkpath(joinpath(@__DIR__, "processed/"))
 CSV.write(joinpath(@__DIR__, "processed/tweets_cn_news.csv"), tweets)
+
+println("Reading tweet lists")
+cn_tweets_list = JSON.parsefile(joinpath(@__DIR__, "../community-notes/downloads/tweets.json"))
+news_tweets_list = JSON.parsefile(joinpath(@__DIR__, "../news-tweets/downloads/tweets.json"))
+
+println("Combining tweet lists")
+tweets_list = Dict()
+tweets_list["data"] = vcat(cn_tweets_list["data"], news_tweets_list["data"])
+tweets_list["includes"] = Dict()
+tweets_list["includes"]["users"] = vcat(cn_tweets_list["includes"]["users"], news_tweets_list["includes"]["users"])
+open(joinpath(@__DIR__, "processed/tweets_cn_news.json"), "w") do f
+	JSON.print(f, tweets_list, 4)
+end
+
+println("Done")
