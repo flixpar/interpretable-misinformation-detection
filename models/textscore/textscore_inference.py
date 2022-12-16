@@ -73,7 +73,7 @@ print("Inference...")
 
 results = trainer.predict(test_dataset=dataset_all)
 
-ids = [ex["id"] for ex in dataset_all]
+ids = [ex["tweetId"] for ex in dataset_all]
 splits = [ex["split"] for ex in dataset_all]
 
 labels = results.label_ids
@@ -85,7 +85,7 @@ labels = (labels * 2) - 1
 preds = (preds * 2) - 1
 pred_scores = pred_scores * preds
 
-output_list = [{"id": r[0], "split": r[1], "label": r[2], "pred": r[3], "pred_score": r[4]} for r in zip(ids, splits, labels, preds, pred_scores)]
+output_list = [{"tweetId": r[0], "split": r[1], "label": r[2], "pred": r[3], "pred_score": r[4]} for r in zip(ids, splits, labels, preds, pred_scores)]
 
 output_df = pd.DataFrame(output_list)
 output_df.to_csv(f"textscores_{SAVEID}.csv", index=False)
