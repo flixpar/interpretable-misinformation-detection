@@ -34,11 +34,17 @@ def main():
 	expanded_urls = pmap(expand_url, all_urls)
 
 	expansions_df = pd.DataFrame(expanded_urls)
-	expansions_df.to_csv(basepath.joinpath("downloads/url_expansions_BLAH.csv"), index=False)
+	expansions_df.to_csv(basepath.joinpath("downloads/url_expansions.csv"), index=False)
+
+	domains = [url["domain"] for url in expanded_urls]
+	domains = list(set(domains))
 
 	print("Fetching domain scores...")
-	link_scores_list = pmap(fetch_link_score, expanded_urls)
-	link_scores_lookup = {link_score["url"]: link_score for link_score in link_scores_list}
+	domain_scores = pmap(fetch_domain_score, domains)
+	domain_scores_lookup = {domain_score["domain"]: domain_score for domain_score in domain_scores}
+
+	print("Computing link scores...")
+	link_scores_lookup = {url["url"]: domain_scores_lookup[url["domain"]] for url in expanded_urls}
 
 	default_link_score = {"score": 0, "confidence": 0}
 	def avg_link_score(tweet):
@@ -60,7 +66,7 @@ def main():
 
 	print("Saving results...")
 	os.makedirs(basepath.joinpath("downloads"), exist_ok=True)
-	link_scores_df.to_csv(basepath.joinpath("downloads/link_scores_BLAH.csv"), index=False)
+	link_scores_df.to_csv(basepath.joinpath("downloads/link_scores.csv"), index=False)
 
 	print("Done!")
 
@@ -103,15 +109,13 @@ def get_urls(tweet):
 			return [url["expanded_url"] for url in urls]
 	return []
 
-def fetch_link_score(url):
-	domain = urlsplit(url["expanded_url"]).netloc
-	scores = fetch_domain_score(domain)
-	scores["score"] = (scores["score"] * 2) - 1
-	return {**url, **scores}
-
 def fetch_domain_score(domain):
 	r = requests.get("https://misinfo.me/misinfo/api/credibility/sources/", params={"source": domain}).json()
-	return {"domain": domain, "score": r["credibility"]["value"], "confidence": r["credibility"]["confidence"]}
+	return {
+		"domain": domain,
+		"score": (r["credibility"]["value"] * 2) - 1,
+		"confidence": r["credibility"]["confidence"],
+	}
 
 if __name__ == "__main__":
 	main()
