@@ -34,6 +34,7 @@ def main():
 	expanded_urls = pmap(expand_url, all_urls)
 
 	expansions_df = pd.DataFrame(expanded_urls)
+	os.makedirs(basepath.joinpath("downloads"), exist_ok=True)
 	expansions_df.to_csv(basepath.joinpath("downloads/url_expansions.csv"), index=False)
 
 	domains = [url["domain"] for url in expanded_urls]
@@ -65,7 +66,6 @@ def main():
 	link_scores_df = pd.DataFrame(link_scores)
 
 	print("Saving results...")
-	os.makedirs(basepath.joinpath("downloads"), exist_ok=True)
 	link_scores_df.to_csv(basepath.joinpath("downloads/link_scores.csv"), index=False)
 
 	print("Done!")
