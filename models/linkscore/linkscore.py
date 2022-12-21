@@ -2,7 +2,7 @@ import pandas as pd
 import json
 
 import requests
-from urllib.parse import urlsplit
+import tldextract
 import re
 
 import multiprocessing
@@ -87,7 +87,7 @@ def is_twitter_url(url):
 
 def expand_url(url):
 	expanded_url = expand_url_(url)
-	domain = urlsplit(expanded_url).netloc
+	domain = tldextract.extract(expanded_url).registered_domain
 	return {"url": url, "expanded_url": expanded_url, "domain": domain}
 
 def expand_url_(url):
