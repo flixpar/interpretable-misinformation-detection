@@ -27,7 +27,7 @@ def main():
 	predictions.to_csv(basepath.joinpath("output/userscores.csv"), index=False)
 
 def load_data():
-	data = pd.read_csv(basepath.joinpath("../../data/combined/processed/users_cn_news.csv"))
+	data = pd.read_csv(basepath.joinpath("../../data/twitter-users/processed/users_cn_news.csv"))
 	data = data[["tweetId", "verified", "followers_count", "following_count", "tweet_count", "listed_count", "created_at"]]
 
 	labels_df = pd.read_csv(basepath.joinpath("../../data/combined/processed/tweets_cn_news.csv"))

@@ -46,7 +46,7 @@ for i in err_ids:
 	})
 users_df = pd.DataFrame(users)
 
-tweets_df = pd.read_csv("processed/tweets_cn_news.csv", dtype={"tweetId": str, "userId": str})
+tweets_df = pd.read_csv("../combined/processed/tweets_cn_news.csv", dtype={"tweetId": str, "userId": str})
 tweets_df = tweets_df[["tweetId", "userId"]]
 
 users_df = users_df.merge(tweets_df, on="userId", how="inner")

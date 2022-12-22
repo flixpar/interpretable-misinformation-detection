@@ -48,7 +48,7 @@ def merge_outputs():
 		json.dump(errors, f, indent="\t")
 
 def get_user_ids():
-	rawdata = pd.read_csv("processed/tweets_cn_news.csv", dtype={"userId": str})
+	rawdata = pd.read_csv("../combined/processed/tweets_cn_news.csv", dtype={"userId": str})
 	user_ids = rawdata.userId.unique()
 	user_ids = user_ids.tolist()
 
