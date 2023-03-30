@@ -39,6 +39,8 @@ def format_tweet(tweet_id):
 		"tweetId": tweet_id,
 		"content": content,
 
+		"created_at": tweet["created_at"],
+
 		"conversation_id": tweet["conversation_id"],
 
 		"userId": tweet["author_id"],
