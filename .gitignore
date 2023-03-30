@@ -1,4 +1,5 @@
 backup/
 tmp/
+*.secret
 *.csv
 todo.md
